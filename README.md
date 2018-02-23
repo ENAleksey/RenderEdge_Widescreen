@@ -8,7 +8,7 @@ Adds support for monitors with aspect ratios wider than 4:3.
 </p>
 
 # Installation
-Just put the .mix file from archive into the folder where WarCraft III is installed.
+Just put RenderEdge_Widescreen.mix file into the folder where WarCraft III is installed.
 
 **Requirements:**
 - Windows XP or above;
