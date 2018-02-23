@@ -2,9 +2,9 @@
 A standalone version of RenderEdge with only widescreen fix.
 Adds support for monitors with aspect ratios wider than 4:3.
 <p align="center">
-  <img src="1.png" width="20%"/>
-  <img src="2.png" width="20%"/>
-  <img src="3.png" width="20%"/>
+  <img src="1.png" width="14%"/>
+  <img src="2.png" width="29%"/>
+  <img src="3.png" width="55%"/>
 </p>
 
 # Installation
