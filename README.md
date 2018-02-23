@@ -1,11 +1,6 @@
 # Widescreen fix for Warcraft III
 A standalone version of RenderEdge with only widescreen fix.
 Adds support for monitors with aspect ratios wider than 4:3.
-<p align="center">
-  <img src="1.png" width="19%"/>
-  <img src="2.png" width="350"/>
-  <img src="2.png" width="350"/>
-</p>
 
 # Installation
 Just put the .mix file from archive into the folder where WarCraft III is installed.
