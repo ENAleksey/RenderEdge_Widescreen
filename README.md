@@ -20,3 +20,5 @@ Put RenderEdge_Widescreen.mix file into the folder where WarCraft III is install
 - 1.26a;
 - 1.24e;
 - 1.23a.
+
+Some code was taken from here: https://github.com/actboy168/YDWE
