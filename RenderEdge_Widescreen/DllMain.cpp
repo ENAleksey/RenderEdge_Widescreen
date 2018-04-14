@@ -60,12 +60,13 @@ void __fastcall CreateMatrixPerspectiveFov_proxy(uint32_t outMatrix, uint32_t un
 }
 
 
-void __fastcall BuildHPBars_proxy(int32_t a1, int32_t unused, int32_t a2, int32_t a3)
+void __fastcall BuildHPBars_proxy(uint32_t a1, uint32_t unused, uint32_t a2, uint32_t a3)
 {
 	fast_call<void>(address_BuildHPBars, a1, unused, a2, a3);
 
 	uint32_t pHPBarFrame = *((uint32_t*)a1 + 3);
-	*((float*)pHPBarFrame + 22) /= g_fWideScreenMul;
+	if (pHPBarFrame)
+		*((float*)pHPBarFrame + 22) /= g_fWideScreenMul;
 }
 
 
