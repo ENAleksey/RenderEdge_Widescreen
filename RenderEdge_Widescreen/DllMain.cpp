@@ -1,19 +1,18 @@
 #include <windows.h>
-
 #include <cmath> 
 #include "War3Versions.h"
 #include "detours.h"
-#include "basic_searcher.h"
 
 #pragma comment( lib, "detours.lib" )
+#pragma comment(lib, "Version.lib")
+
+using uint32 = unsigned int;
 
 HWND g_hWnd;
 uintptr_t address_GameBase = 0;
 uintptr_t address_CreateMatrixPerspectiveFov = 0;
 uintptr_t address_BuildHPBars = 0;
 float g_fWideScreenMul = 1.0f;
-
-base::warcraft3::basic_searcher war3_searcher(GetModuleHandleW(L"game.dll"));
 
 
 template <typename ReturnType, typename FPType, typename A0, typename A1, typename A2, typename A3>
@@ -25,7 +24,7 @@ inline ReturnType fast_call(FPType fp, A0 a0, A1 a1, A2 a2, A3 a3)
 }
 
 
-void __fastcall CreateMatrixPerspectiveFov_proxy(uint32_t outMatrix, uint32_t unused, float fovY, float aspectRatio, float nearZ, float farZ)
+void __fastcall CreateMatrixPerspectiveFov_proxy(uint32 outMatrix, uint32 unused, float fovY, float aspectRatio, float nearZ, float farZ)
 {
 	RECT r;
 	if (GetWindowRect(g_hWnd, &r))
@@ -60,15 +59,14 @@ void __fastcall CreateMatrixPerspectiveFov_proxy(uint32_t outMatrix, uint32_t un
 }
 
 
-void __fastcall BuildHPBars_proxy(uint32_t a1, uint32_t unused, uint32_t a2, uint32_t a3)
+void __fastcall BuildHPBars_proxy(uint32 a1, uint32 unused, uint32 a2, uint32 a3)
 {
 	fast_call<void>(address_BuildHPBars, a1, unused, a2, a3);
 
-	uint32_t pHPBarFrame = *((uint32_t*)a1 + 3);
+	uint32 pHPBarFrame = *((uint32*)a1 + 3);
 	if (pHPBarFrame)
 		*((float*)pHPBarFrame + 22) /= g_fWideScreenMul;
 }
-
 
 
 bool inline_install(uintptr_t* pointer_ptr, uintptr_t detour)
@@ -91,27 +89,33 @@ bool inline_install(uintptr_t* pointer_ptr, uintptr_t detour)
 	return false;
 }
 
-
 Version GetGameVersion()
 {
-	static const char warcraft3_version_string[] = "Warcraft III (build ";
-
-	uintptr_t ptr;
-	size_t size = sizeof(warcraft3_version_string) - 1;
-	ptr = war3_searcher.search_string_ptr(warcraft3_version_string, size);
-
-	if (!ptr)
-		return Version::unknown;
-
-	uint32_t n = 0;
-	ptr += size;
-	while (isdigit(*(uint8_t*)ptr))
+	DWORD dwHandle;
+	DWORD sz = GetFileVersionInfoSizeW(L"Game.dll", &dwHandle);
+	if (sz == 0)
 	{
-		n = n * 10 + *(uint8_t*)ptr - '0';
-		ptr++;
+		return Version::unknown;
 	}
 
-	return static_cast<Version>(n);
+	char* buf = new char[sz];
+	if (!GetFileVersionInfoW(L"Game.dll", dwHandle, sz, &buf[0]))
+	{
+		delete buf;
+		return Version::unknown;
+	}
+
+	VS_FIXEDFILEINFO* pvi;
+	sz = sizeof(VS_FIXEDFILEINFO);
+	if (!VerQueryValueW(&buf[0], L"\\", (LPVOID*)&pvi, (uint32*)&sz))
+	{
+		delete buf;
+		return Version::unknown;
+	}
+	delete buf;
+
+	uint32 buildVersion = pvi->dwFileVersionLS & 0xFFFF;
+	return static_cast<Version>(buildVersion);
 }
 
 

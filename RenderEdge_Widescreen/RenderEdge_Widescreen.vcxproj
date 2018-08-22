@@ -142,15 +142,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="basic_searcher.cpp" />
     <ClCompile Include="DllMain.cpp" />
-    <ClCompile Include="memory_search.cpp" />
-    <ClCompile Include="pe_reader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="basic_searcher.h" />
-    <ClInclude Include="memory_search.h" />
-    <ClInclude Include="pe_reader.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="War3Versions.h" />
   </ItemGroup>
