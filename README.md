@@ -30,5 +30,3 @@ Put RenderEdge_Widescreen.mix file into the folder where WarCraft III is install
 
 **RenderEdge on XGM:**
 - http://xgm.guru/p/renderedge
-
-Special thanks to actboy168 and his project YDWE: https://github.com/actboy168/YDWE
