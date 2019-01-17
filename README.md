@@ -23,12 +23,11 @@ Put RenderEdge_Widescreen.mix file into the folder where WarCraft III is install
 
 # References
 **RenderEdge on Nexus Mods:**
-- Experimental version (https://www.nexusmods.com/warcraft3/mods/11);
+- Basic version (https://www.nexusmods.com/warcraft3/mods/11);
 - Widescreen Fix (https://www.nexusmods.com/warcraft3/mods/12).
 
 **RenderEdge on Hiveworkshop:**
 - Basic version (http://www.hiveworkshop.com/threads/288375);
-- Experimental version (http://www.hiveworkshop.com/threads/288551);
 - Widescreen fix (https://www.hiveworkshop.com/threads/293641);
 - Memory Hack (https://www.hiveworkshop.com/threads/299926).
 
