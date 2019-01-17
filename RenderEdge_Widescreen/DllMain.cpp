@@ -15,15 +15,6 @@ uintptr_t address_BuildHPBars = 0;
 float g_fWideScreenMul = 1.0f;
 
 
-template <typename ReturnType, typename FPType, typename A0, typename A1, typename A2, typename A3>
-inline ReturnType fast_call(FPType fp, A0 a0, A1 a1, A2 a2, A3 a3)
-{
-	typedef ReturnType(__fastcall *TFPAeroFunction)(A0 a0, A1 a1, A2 a2, A3 a3);
-
-	return ((TFPAeroFunction)fp)(a0, a1, a2, a3);
-}
-
-
 void __fastcall CreateMatrixPerspectiveFov_proxy(uint32 outMatrix, uint32 unused, float fovY, float aspectRatio, float nearZ, float farZ)
 {
 	RECT r;
@@ -61,7 +52,7 @@ void __fastcall CreateMatrixPerspectiveFov_proxy(uint32 outMatrix, uint32 unused
 
 void __fastcall BuildHPBars_proxy(uint32 a1, uint32 unused, uint32 a2, uint32 a3)
 {
-	fast_call<void>(address_BuildHPBars, a1, unused, a2, a3);
+	((void(__fastcall *)(uint32, uint32, uint32, uint32))address_BuildHPBars)(a1, unused, a2, a3);
 
 	uint32 pHPBarFrame = *((uint32*)a1 + 3);
 	if (pHPBarFrame)
