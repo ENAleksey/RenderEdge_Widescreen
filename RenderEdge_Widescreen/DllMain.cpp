@@ -9,7 +9,6 @@
 using uint32 = unsigned int;
 
 HWND g_hWnd;
-uintptr_t address_GameBase = 0;
 uintptr_t address_CreateMatrixPerspectiveFov = 0;
 uintptr_t address_BuildHPBars = 0;
 float g_fWideScreenMul = 1.0f;
@@ -57,9 +56,7 @@ void __fastcall BuildHPBars_proxy(uint32 a1, uint32 unused, uint32 a2, uint32 a3
 	uint32 pHPBarFrame = *((uint32*)a1 + 3);
 
 	if (pHPBarFrame)
-	{
 		*((float*)pHPBarFrame + 22) /= g_fWideScreenMul;
-	}
 }
 
 
@@ -139,12 +136,9 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID /*pReserved*/)
 {
 	if (reason == DLL_PROCESS_ATTACH)
 	{
-		DisableThreadLibraryCalls(module);
-
-		address_GameBase = (uintptr_t)GetModuleHandleW(L"Game.dll");
-		g_hWnd = GetActiveWindow();
-
 		const Version gameVersion = GetGameVersion();
+		uintptr_t address_GameBase = (uintptr_t)GetModuleHandleW(L"Game.dll");
+		g_hWnd = GetActiveWindow();
 
 		switch (gameVersion)
 		{
@@ -204,14 +198,10 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID /*pReserved*/)
 	else if (reason == DLL_PROCESS_DETACH)
 	{
 		if (address_CreateMatrixPerspectiveFov)
-		{
 			DetourUninstall(&address_CreateMatrixPerspectiveFov, (uintptr_t)CreateMatrixPerspectiveFov_proxy);
-		}
 
 		if (address_BuildHPBars)
-		{
 			DetourUninstall(&address_BuildHPBars, (uintptr_t)BuildHPBars_proxy);
-		}
 	}
 
 	return TRUE;
