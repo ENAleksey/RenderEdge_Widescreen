@@ -55,28 +55,53 @@ void __fastcall BuildHPBars_proxy(uint32 a1, uint32 unused, uint32 a2, uint32 a3
 	((void(__fastcall *)(uint32, uint32, uint32, uint32))address_BuildHPBars)(a1, unused, a2, a3);
 
 	uint32 pHPBarFrame = *((uint32*)a1 + 3);
+
 	if (pHPBarFrame)
+	{
 		*((float*)pHPBarFrame + 22) /= g_fWideScreenMul;
+	}
 }
 
 
-bool inline_install(uintptr_t* pointer_ptr, uintptr_t detour)
+bool DetourInstall(uintptr_t* pointer_ptr, uintptr_t detour)
 {
-	LONG status;
-	if ((status = DetourTransactionBegin()) == NO_ERROR)
+	if (DetourTransactionBegin() == NO_ERROR)
 	{
-		if ((status = DetourUpdateThread(GetCurrentThread())) == NO_ERROR)
+		if (DetourUpdateThread(GetCurrentThread()) == NO_ERROR)
 		{
-			if ((status = DetourAttach((PVOID*)pointer_ptr, (PVOID)detour)) == NO_ERROR)
+			if (DetourAttach((PVOID*)pointer_ptr, (PVOID)detour) == NO_ERROR)
 			{
-				if ((status = DetourTransactionCommit()) == NO_ERROR)
+				if (DetourTransactionCommit() == NO_ERROR)
 				{
 					return true;
 				}
 			}
 		}
+
 		DetourTransactionAbort();
 	}
+
+	return false;
+}
+
+bool DetourUninstall(uintptr_t* pointer_ptr, uintptr_t detour)
+{
+	if (DetourTransactionBegin() == NO_ERROR)
+	{
+		if (DetourUpdateThread(GetCurrentThread()) == NO_ERROR)
+		{
+			if (DetourDetach((PVOID*)pointer_ptr, (PVOID)detour) == NO_ERROR)
+			{
+				if (DetourTransactionCommit() == NO_ERROR)
+				{
+					return true;
+				}
+			}
+		}
+
+		DetourTransactionAbort();
+	}
+
 	return false;
 }
 
@@ -119,7 +144,8 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID /*pReserved*/)
 		address_GameBase = (uintptr_t)GetModuleHandleW(L"Game.dll");
 		g_hWnd = GetActiveWindow();
 
-		Version gameVersion = GetGameVersion();
+		const Version gameVersion = GetGameVersion();
+
 		switch (gameVersion)
 		{
 		case Version::v128f:
@@ -166,13 +192,25 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID /*pReserved*/)
 		if (address_CreateMatrixPerspectiveFov)
 		{
 			address_CreateMatrixPerspectiveFov += address_GameBase;
-			inline_install(&address_CreateMatrixPerspectiveFov, (uintptr_t)CreateMatrixPerspectiveFov_proxy);
+			DetourInstall(&address_CreateMatrixPerspectiveFov, (uintptr_t)CreateMatrixPerspectiveFov_proxy);
 		}
 
 		if (address_BuildHPBars)
 		{
 			address_BuildHPBars += address_GameBase;
-			inline_install(&address_BuildHPBars, (uintptr_t)BuildHPBars_proxy);
+			DetourInstall(&address_BuildHPBars, (uintptr_t)BuildHPBars_proxy);
+		}
+	}
+	else if (reason == DLL_PROCESS_DETACH)
+	{
+		if (address_CreateMatrixPerspectiveFov)
+		{
+			DetourUninstall(&address_CreateMatrixPerspectiveFov, (uintptr_t)CreateMatrixPerspectiveFov_proxy);
+		}
+
+		if (address_BuildHPBars)
+		{
+			DetourUninstall(&address_BuildHPBars, (uintptr_t)BuildHPBars_proxy);
 		}
 	}
 
