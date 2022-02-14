@@ -12,7 +12,7 @@ Put RenderEdge_Widescreen.mix file into the folder where WarCraft III is install
 
 **Requirements:**
 - Windows XP or above;
-- Microsoft Visual C++ Redistributable for Visual Studio 2017 (https://support.microsoft.com/ru-ru/help/2977003/the-latest-supported-visual-c-downloads).
+- Microsoft Visual C++ Redistributable X86 for Visual Studio 2017 (https://support.microsoft.com/ru-ru/help/2977003/the-latest-supported-visual-c-downloads).
 
 **Supported patches:**
 - 1.28.0, 1.28.2, 1.28.4, 1.28.5;
